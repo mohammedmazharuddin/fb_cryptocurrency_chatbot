@@ -5,18 +5,18 @@ defmodule FbCryptocurrencyChatbot.HttpUtility do
   """
   require Logger
 
-  def fetch(method, url, params, headers, options \\ [])
-  def fetch(:post, url, params, headers, options) do
+  def request(method, url, params, headers, options \\ [])
+  def request(:post, url, params, headers, options) do
     HTTPoison.post(url, params, headers, options)
     |> parse_response()
   end
 
-  def fetch(:get, url, _, headers, options) do
+  def request(:get, url, _, headers, options) do
     HTTPoison.get(url, headers, options)
     |> parse_response()
   end
 
-  def fetch(method, url, body, headers, options) do
+  def request(method, url, body, headers, options) do
     HTTPoison.request(method, url, body, headers, options)
     |> parse_response()
   end

@@ -16,7 +16,7 @@ defmodule FbCryptocurrencyChatbot.MessageSender do
   @spec send(String.t, String.t) :: HTTPotion.Response.t
   def send(recepient, message) do
     with \
-      {:ok, resp} <- HttpUtility.fetch(:post, url(), json_payload(recepient, message), [{"Content-Type", "application/json"}])
+      {:ok, resp} <- HttpUtility.request(:post, url(), json_payload(recepient, message), [{"Content-Type", "application/json"}])
     do
       Logger.info("response from FB #{inspect(resp)}")
       {:ok, resp}
