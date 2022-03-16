@@ -4,10 +4,12 @@ defmodule FbCryptocurrencyChatbot.MessageActionService do
   """
   alias FbCryptocurrencyChatbot.MessageSender
   alias FbCryptocurrencyChatbot.PostbackHandlerService
+  alias FbCryptocurrencyChatbot.MessageHandlerService
   require Logger
 
-  def perform_message_action(%{"message" => message, "recipient" => recipient, "sender" => sender} = _event) do
+  def perform_message_action(%{"message" => message, "recipient" => recipient, "sender" => %{"id" => sender}} = _event) do
     Logger.info(["message: ", message["text"]])
+    MessageHandlerService.handle_message(message["text"], sender)
   end
 
   def perform_message_action(%{"postback" => postback, "recipient" => _recipient, "sender" => %{"id" => sender}} = _event) do
