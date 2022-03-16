@@ -5,13 +5,14 @@ defmodule FbCryptocurrencyChatbot.MessageSender do
   require Logger
   alias FbCryptocurrencyChatbot.HttpUtility
 
+  @page_token Application.get_env(:fb_cryptocurrency_chatbot, :fb_creds)[:page_token]
+  
   @doc """
   sends a message to the the recepient
 
     * :recepient - the recepient to send the message to
     * :message - the message to send
   """
-  @page_token Application.get_env(:fb_cryptocurrency_chatbot, :fb_creds)[:page_token]
 
   @spec send(String.t, String.t) :: HTTPotion.Response.t
   def send(recepient, message) do

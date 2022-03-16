@@ -1,10 +1,18 @@
 defmodule FbCryptocurrencyChatbotWeb.WebHookController do
   use FbCryptocurrencyChatbotWeb, :controller
-  require Logger
   alias FbCryptocurrencyChatbot.MessageActionService
+
+  require Logger
 
   @verify_token Application.get_env(:fb_cryptocurrency_chatbot, :fb_creds)[:verify_token]
 
+  @doc """
+  handles request to verify the webhook token
+
+    * :conn - connection map
+    * :parms - query params map
+  """
+  @spec verify_token(any(), %{optional(:__struct__) => none(), optional(atom() | binary()) => any()}) :: term
   def verify_token(
         conn,
         %{"hub.challenge" => challenge, "hub.mode" => _mode, "hub.verify_token" => verify_token} =
@@ -21,7 +29,14 @@ defmodule FbCryptocurrencyChatbotWeb.WebHookController do
 
   def verify_token(conn, _params), do: send_resp(conn, 403, "")
 
-  def process_events(conn, params) do
+  @doc """
+  handles request to process incoming webhook events
+
+    * :conn - connection map
+    * :parms - query params map
+  """
+  @spec process_events(any(), %{optional(:__struct__) => none(), optional(atom() | binary()) => any()}) :: term
+  def process_events(conn, _params) do
     if conn.body_params["object"] == "page" do
       conn.body_params["entry"]
       |> Enum.each(fn entry ->

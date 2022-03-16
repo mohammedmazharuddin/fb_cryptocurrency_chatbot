@@ -10,7 +10,9 @@ defmodule FbCryptocurrencyChatbot.Templates do
     * :type - type of button
     * :text - text to display with buttons
     * :buttons_list - list of buttons along with the payloads
+    * :recipient - recipient to whome to send the message
   """
+  @spec fetch_button_template(postback :: String.t, text :: String.t, buttons_list :: list, recipient :: String.t) :: {atom, term}
   def fetch_button_template("postback", text, buttons_list, recipient) do
     buttons =
       buttons_list
@@ -46,6 +48,15 @@ defmodule FbCryptocurrencyChatbot.Templates do
     {:error, %{}}
   end
 
+  @doc """
+  fetch button templates based on the button type
+
+    * :type - type of button
+    * :button_title - text to display with buttons
+    * :items - list of items to be displayed
+    * :recipient - recipient to whome to send the message
+  """
+  @spec fetch_single_button_generic_template(postback :: String.t, button_title :: String.t, items :: list, recipient :: String.t) :: {atom, term}
   def fetch_single_button_generic_template("postback", button_title, items, recipient) do
     elements =
       items
