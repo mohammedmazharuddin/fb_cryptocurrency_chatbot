@@ -32,18 +32,27 @@ defmodule FbCryptocurrencyChatbot.FbUtilityService do
     do
       user = resp.body |> Poison.decode! |> string_keys_to_atoms
       {:ok, Map.merge(%FbCryptocurrencyChatbot.Username{}, user)}
-    else
-      resp -> resp
     end
   end
 
   def send_button_options(type, text, buttons_list, recipient) do
     url = "https://graph.facebook.com/v13.0/me/messages?access_token=#{@page_token}"
     with \
-      {:ok, template} <- Templates.fetch_button_template(type, text, buttons_list, recipient) |> IO.inspect(label: "yes please"),
+      {:ok, template} <- Templates.fetch_button_template(type, text, buttons_list, recipient),
       {:ok, resp} <- HttpUtility.request(:post, url, Poison.encode!(template), [{"Content-Type", "application/json"}])
     do
       Logger.info("Button options sent!")
+      {:ok, resp}
+    end
+  end
+
+  def send_generic_buttons_options(type, button_title, items, recipient) do
+    url = "https://graph.facebook.com/v13.0/me/messages?access_token=#{@page_token}"
+    with \
+      {:ok, template} <- Templates.fetch_single_button_generic_template(type, button_title, items, recipient),
+      {:ok, resp} <- HttpUtility.request(:post, url, Poison.encode!(template) |> IO.inspect, [{"Content-Type", "application/json"}])
+    do
+      Logger.info("Buttons list items sent!")
       {:ok, resp}
     end
   end
