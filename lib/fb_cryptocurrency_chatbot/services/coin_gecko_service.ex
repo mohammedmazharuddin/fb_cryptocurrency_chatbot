@@ -18,4 +18,25 @@ defmodule FbCryptocurrencyChatbot.CoinGeckoService do
       {:ok, coins}
     end
   end
+
+  def fetch_coin_price(coin_id) do
+    query = "vs_currency=usd&days=14"
+    url = "https://api.coingecko.com/api/v3/coins/#{coin_id}/market_chart?#{query}"
+
+    with {:ok, resp} <- HttpUtility.request(:get, url, "", []) do
+      prices =
+        resp.body
+        |> Poison.decode!()
+        |> Map.fetch!("prices")
+        |> Enum.map(& Float.round(Enum.at(&1, 1), 2))
+
+      prices_list = 
+        prices 
+        |> Enum.chunk_every(100)
+        |> Enum.map(
+          & Enum.reduce(&1, "", fn price, acc -> acc <> "#{to_string(price)} USD \n" end)
+        )
+      {:ok, prices_list}
+    end
+  end
 end

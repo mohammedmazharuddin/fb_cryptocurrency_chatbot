@@ -8,7 +8,7 @@ defmodule FbCryptocurrencyChatbot.PostbackHandlerService do
   require Logger
 
   def handle_postback("WELCOME", recipient) do
-    text = "To search for coins, please use the options below."
+    text = "To search for coins, please use the options below. Search coins by"
     buttons_list = [{"Name", "COINS_BY_NAME"}, {"ID", "COINS_BY_ID"}]
 
     with \
@@ -44,9 +44,20 @@ defmodule FbCryptocurrencyChatbot.PostbackHandlerService do
     end
   end
 
-  def handle_postback(postback, _recipient) do
-    Logger.notice(["Unhandled postback: ", postback])
-
-    :ok
+  def handle_postback(postback, recipient) do
+    cond do
+      String.contains? postback, "GET_COIN_PRICE" ->
+        with \
+          [_payload, coin_id] <- String.split(postback, "/"),
+          {:ok, prices_list} <- CoinGeckoService.fetch_coin_price(coin_id)
+        do
+          prices_list
+          |> Enum.each(& MessageSender.send(recipient, &1))
+          :ok
+        else
+          _any -> Logger.error("Failed to handle 'GET_COIN_PRICE' postback.")
+        end
+      true -> Logger.notice(["Unhandled postback: ", postback])
+    end
   end
 end
