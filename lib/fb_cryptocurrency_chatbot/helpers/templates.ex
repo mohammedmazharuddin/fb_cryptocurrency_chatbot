@@ -3,7 +3,6 @@ defmodule FbCryptocurrencyChatbot.Templates do
   Module responsible for communicating back to facebook messenger
   """
   require Logger
-  alias FbCryptocurrencyChatbot.HttpUtility
 
   @doc """
   fetch button templates based on the button type
@@ -38,10 +37,51 @@ defmodule FbCryptocurrencyChatbot.Templates do
         }
       }
     }
+
     {:ok, buttons_template}
   end
 
-  def fetch_button_template(type, _text, _buttons_list) do 
+  def fetch_button_template(type, _text, _buttons_list, _recipient) do
+    Logger.error("No template available for #{type}")
+    {:error, %{}}
+  end
+
+  def fetch_single_button_generic_template("postback", button_title, items, recipient) do
+    elements =
+      items
+      |> Enum.map(
+        &%{
+          title: &1.name,
+          image_url: &1.image,
+          buttons: [
+            %{
+              type: "postback",
+              title: button_title,
+              payload: "GET_COIN_PRICE/#{&1.id}"
+            }
+          ]
+        }
+      )
+
+    generic_template = %{
+      recipient: %{
+        id: recipient
+      },
+      message: %{
+        attachment: %{
+          type: "template",
+          payload: %{
+            template_type: "generic",
+            elements: elements
+          }
+        }
+      }
+    }
+
+    {:ok, generic_template}
+  end
+
+  def fetch_single_button_generic_template(type, _button_title, _items, _recipient) do
     Logger.error("No template available for #{type}")
     {:error, %{}}
   end
