@@ -5,8 +5,10 @@ defmodule FbCryptocurrencyChatbotWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", FbCryptocurrencyChatbotWeb do
+  scope "/", FbCryptocurrencyChatbotWeb do
     pipe_through :api
+    get "/webhook", WebHookController, :verify_token
+    post "/webhook", WebHookController, :process_events
   end
 
   # Enables LiveDashboard only for development
@@ -22,7 +24,7 @@ defmodule FbCryptocurrencyChatbotWeb.Router do
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
 
-      live_dashboard "/dashboard", metrics: FbCryptocurrencyChatbotWeb.Telemetry
+      live_dashboard "/dashboard", metrics: FbCryptocurrencyChatbotWeb.Telemetry 
     end
   end
 

@@ -16,3 +16,7 @@ config :logger, level: :warn
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :fb_cryptocurrency_chatbot, :fb_creds,
+  verify_token: "sdfEFRSsaf",
+  page_token: ""
