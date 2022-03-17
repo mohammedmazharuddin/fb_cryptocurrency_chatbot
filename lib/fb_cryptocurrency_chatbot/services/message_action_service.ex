@@ -2,12 +2,11 @@ defmodule FbCryptocurrencyChatbot.MessageActionService do
   @moduledoc """
   Performs actions based on incoming messages
   """
-  alias FbCryptocurrencyChatbot.MessageSender
   alias FbCryptocurrencyChatbot.PostbackHandlerService
   alias FbCryptocurrencyChatbot.MessageHandlerService
   require Logger
 
-  def perform_message_action(%{"message" => message, "recipient" => recipient, "sender" => %{"id" => sender}} = _event) do
+  def perform_message_action(%{"message" => message, "recipient" => _recipient, "sender" => %{"id" => sender}} = _event) do
     Logger.info(["message: ", message["text"]])
     MessageHandlerService.handle_message(message["text"], sender)
   end

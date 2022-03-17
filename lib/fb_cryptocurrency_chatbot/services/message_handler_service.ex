@@ -4,7 +4,7 @@ defmodule FbCryptocurrencyChatbot.MessageHandlerService do
   """
   require Logger
 
-  def handle_message(message, recipient) do
+  def handle_message(message, _recipient) do
     Logger.notice(["Unhandled message: ", message])
   end
 end
