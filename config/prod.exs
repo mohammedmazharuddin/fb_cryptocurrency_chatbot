@@ -47,3 +47,7 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
+
+config :fb_cryptocurrency_chatbot, :fb_creds,
+  verify_token: "${VERIFY_TOKEN}",
+  page_token: "${PAGE_TOKEN}"
